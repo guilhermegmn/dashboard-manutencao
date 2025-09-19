@@ -219,30 +219,31 @@ export default function MaintenanceDashboard() {
           try {
             const equipmentMap = new Map<string, EquipmentData>();
             
-            results.data.forEach((row: any) => {
-              const id = String(row.id || "").trim();
+            results.data.forEach((row: unknown) => {
+              const rowData = row as Record<string, unknown>;
+              const id = String(rowData.id || "").trim();
               if (!id) return;
               
               if (!equipmentMap.has(id)) {
                 equipmentMap.set(id, {
                   id,
-                  name: String(row.name || "").trim(),
-                  category: String(row.category || "").trim(),
-                  status: String(row.Status || row.status || "").trim() || "Operacional",
+                  name: String(rowData.name || "").trim(),
+                  category: String(rowData.category || "").trim(),
+                  status: String(rowData.Status || rowData.status || "").trim() || "Operacional",
                   history: [],
                 });
               }
               
               const equipment = equipmentMap.get(id)!;
-              const month = String(row.month || "").trim();
+              const month = String(rowData.month || "").trim();
               
               if (month) {
                 equipment.history.push({
                   month,
-                  MTBF: Number(row.MTBF) || 0,
-                  MTTR: Number(row.MTTR) || 0,
-                  Disponibilidade: Number(row.Disponibilidade) || 0,
-                  Custo: Number(row.Custo) || 0,
+                  MTBF: Number(rowData.MTBF) || 0,
+                  MTTR: Number(rowData.MTTR) || 0,
+                  Disponibilidade: Number(rowData.Disponibilidade) || 0,
+                  Custo: Number(rowData.Custo) || 0,
                 });
               }
             });
@@ -261,7 +262,7 @@ export default function MaintenanceDashboard() {
             reject(new Error(`Erro ao processar CSV: ${err}`));
           }
         },
-        error: (error: any) => reject(new Error(`Erro ao ler arquivo: ${error.message}`))
+        error: (error: { message: string }) => reject(new Error(`Erro ao ler arquivo: ${error.message}`))
       });
     });
   };
