@@ -23,6 +23,20 @@ interface Equipment {
   history: MonthData[];
 }
 
+interface EquipmentData {
+  id: string;
+  name: string;
+  category: string;
+  status: string;
+  history: Array<{
+    month: string;
+    MTBF: number;
+    MTTR: number;
+    Disponibilidade: number;
+    Custo: number;
+  }>;
+}
+
 interface KPICard {
   label: string;
   value: string;
@@ -193,7 +207,7 @@ export default function MaintenanceDashboard() {
     ];
   }, [consolidatedHistory]);
 
-  const parseCSV = async (file: File): Promise<Equipment[]> => {
+  const parseCSV = async (file: File): Promise<EquipmentData[]> => {
     const Papa = (await import("papaparse")).default;
     
     return new Promise((resolve, reject) => {
@@ -201,9 +215,9 @@ export default function MaintenanceDashboard() {
         header: true,
         skipEmptyLines: true,
         dynamicTyping: true,
-        complete: (results: any) => {
+        complete: (results: { data: unknown[] }) => {
           try {
-            const equipmentMap = new Map<string, Equipment>();
+            const equipmentMap = new Map<string, EquipmentData>();
             
             results.data.forEach((row: any) => {
               const id = String(row.id || "").trim();
@@ -401,7 +415,7 @@ motor-c3,Motor C3,Motorização,Ago,365,2.7,95,0.52,Parado`;
               onChange={(e) => setEquipmentId(e.target.value)}
             >
               <option value="">Todos</option>
-              {equipmentOptions.map((e) => (
+              {equipmentOptions.map((e: EquipmentData) => (
                 <option key={e.id} value={e.id}>{e.name}</option>
               ))}
             </select>
