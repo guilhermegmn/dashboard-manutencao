@@ -93,7 +93,7 @@ const PERIODS = [
 
 export default function MaintenanceDashboard() {
   const [csvEquipments, setCsvEquipments] = useState<Equipment[] | null>(null);
-  const [periodId, setPeriodId] = useState("4m");
+  const [periodId, setPeriodId] = useState("3m");
   const [category, setCategory] = useState("");
   const [equipmentId, setEquipmentId] = useState("");
 
@@ -259,7 +259,7 @@ export default function MaintenanceDashboard() {
             
             resolve(equipmentList);
           } catch (err) {
-            reject(new Error(`Erro ao processar CSV: ${err}`));
+            reject(new Error(`Erro ao processar CSV: ${err instanceof Error ? err.message : 'Erro desconhecido'}`));
           }
         },
         error: (error: { message: string }) => reject(new Error(`Erro ao ler arquivo: ${error.message}`))
