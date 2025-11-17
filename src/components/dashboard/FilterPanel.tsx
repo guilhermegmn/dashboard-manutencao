@@ -35,8 +35,9 @@ export function FilterPanel({
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* Filtro de Período */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-700">Período</label>
+        <label htmlFor="period-select" className="text-sm font-medium text-gray-700">Período</label>
         <select
+          id="period-select"
           className="w-full rounded-lg border border-gray-300 px-3 py-2 bg-white shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           value={periodId}
           onChange={(e) => setPeriodId(e.target.value)}
@@ -51,10 +52,11 @@ export function FilterPanel({
 
       {/* Filtro de Categoria */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-700">
+        <label htmlFor="category-select" className="text-sm font-medium text-gray-700">
           Categoria de Equipamento
         </label>
         <select
+          id="category-select"
           className="w-full rounded-lg border border-gray-300 px-3 py-2 bg-white shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           value={category}
           onChange={(e) => handleCategoryChange(e.target.value)}
@@ -70,8 +72,9 @@ export function FilterPanel({
 
       {/* Filtro de Equipamento */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-700">Equipamento</label>
+        <label htmlFor="equipment-select" className="text-sm font-medium text-gray-700">Equipamento</label>
         <select
+          id="equipment-select"
           className="w-full rounded-lg border border-gray-300 px-3 py-2 bg-white shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           value={equipmentId}
           onChange={(e) => setEquipmentId(e.target.value)}
