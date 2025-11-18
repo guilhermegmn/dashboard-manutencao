@@ -27,11 +27,19 @@ export function useCSVImport() {
               if (!id) return;
 
               if (!equipmentMap.has(id)) {
+                // Determinar criticidade se fornecida, senão padrão "B"
+                const criticalityStr = String(rowData.criticality || rowData.Criticality || "B").trim().toUpperCase();
+                const criticality: "A" | "B" | "C" =
+                  (criticalityStr === "A" || criticalityStr === "B" || criticalityStr === "C")
+                    ? criticalityStr
+                    : "B";
+
                 equipmentMap.set(id, {
                   id,
                   name: String(rowData.name || "").trim(),
                   category: String(rowData.category || "").trim(),
                   status: String(rowData.Status || rowData.status || "").trim() || "Operacional",
+                  criticality,
                   history: [],
                 });
               }
@@ -45,6 +53,8 @@ export function useCSVImport() {
                   MTBF: Number(rowData.MTBF) || 0,
                   MTTR: Number(rowData.MTTR) || 0,
                   Disponibilidade: Number(rowData.Disponibilidade) || 0,
+                  Performance: Number(rowData.Performance) || 90,  // Padrão: 90%
+                  Qualidade: Number(rowData.Qualidade || rowData.Quality) || 95,  // Padrão: 95%
                   Custo: Number(rowData.Custo) || 0,
                 });
               }
@@ -81,19 +91,19 @@ export function useCSVImport() {
   }, []);
 
   const generateCSVTemplate = useCallback(() => {
-    const template = `id,name,category,month,MTBF,MTTR,Disponibilidade,Custo,Status
-comp-a1,Compressor A1,Compressão,Mai,280,3.4,90,0.5,Operacional
-comp-a1,Compressor A1,Compressão,Jun,310,3.1,92,0.45,Operacional
-comp-a1,Compressor A1,Compressão,Jul,360,2.8,95,0.4,Operacional
-comp-a1,Compressor A1,Compressão,Ago,390,2.6,96,0.35,Operacional
-este-b2,Esteira B2,Movimentação,Mai,330,2.7,93,0.38,Manutenção Programada
-este-b2,Esteira B2,Movimentação,Jun,360,2.6,95,0.36,Manutenção Programada
-este-b2,Esteira B2,Movimentação,Jul,410,2.4,97,0.34,Manutenção Programada
-este-b2,Esteira B2,Movimentação,Ago,440,2.2,98,0.33,Manutenção Programada
-motor-c3,Motor C3,Motorização,Mai,270,3.2,91,0.62,Parado
-motor-c3,Motor C3,Motorização,Jun,295,3.0,92,0.58,Parado
-motor-c3,Motor C3,Motorização,Jul,330,2.9,94,0.56,Parado
-motor-c3,Motor C3,Motorização,Ago,365,2.7,95,0.52,Parado`;
+    const template = `id,name,category,criticality,month,MTBF,MTTR,Disponibilidade,Performance,Qualidade,Custo,Status
+comp-a1,Compressor A1,Compressão,A,Mai,280,3.4,90,88,96,0.5,Operacional
+comp-a1,Compressor A1,Compressão,A,Jun,310,3.1,92,90,97,0.45,Operacional
+comp-a1,Compressor A1,Compressão,A,Jul,360,2.8,95,92,98,0.4,Operacional
+comp-a1,Compressor A1,Compressão,A,Ago,390,2.6,96,93,98,0.35,Operacional
+este-b2,Esteira B2,Movimentação,B,Mai,330,2.7,93,91,98,0.38,Manutenção Programada
+este-b2,Esteira B2,Movimentação,B,Jun,360,2.6,95,93,98,0.36,Manutenção Programada
+este-b2,Esteira B2,Movimentação,B,Jul,410,2.4,97,94,99,0.34,Manutenção Programada
+este-b2,Esteira B2,Movimentação,B,Ago,440,2.2,98,95,99,0.33,Manutenção Programada
+motor-c3,Motor C3,Motorização,A,Mai,270,3.2,91,85,95,0.62,Parado
+motor-c3,Motor C3,Motorização,A,Jun,295,3.0,92,87,96,0.58,Parado
+motor-c3,Motor C3,Motorização,A,Jul,330,2.9,94,89,96,0.56,Parado
+motor-c3,Motor C3,Motorização,A,Ago,365,2.7,95,90,97,0.52,Parado`;
 
     const blob = new Blob([template], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);

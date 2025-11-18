@@ -15,6 +15,7 @@ describe('FilterPanel', () => {
       name: 'Compressor A1',
       category: 'Compressão',
       status: 'Operacional',
+      criticality: 'A',
       history: [],
     },
     {
@@ -22,6 +23,7 @@ describe('FilterPanel', () => {
       name: 'Esteira B2',
       category: 'Movimentação',
       status: 'Operacional',
+      criticality: 'B',
       history: [],
     },
   ]

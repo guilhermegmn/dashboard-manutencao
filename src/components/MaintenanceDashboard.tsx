@@ -1,14 +1,15 @@
 'use client'
 
 import { useMemo, useState } from "react";
-import { MonthData, KPICard, EquipmentWithAvailability } from "@/types/dashboard";
-import { EQUIPMENT_DATA, PERIODS, TREND_THRESHOLD } from "@/lib/equipmentData";
+import { MonthData, KPICard, EquipmentWithAvailability, CriticalAlert } from "@/types/dashboard";
+import { EQUIPMENT_DATA, PERIODS, TREND_THRESHOLD, KPI_TARGETS } from "@/lib/equipmentData";
 import { useCSVImport } from "@/hooks/useCSVImport";
 import { FilterPanel } from "@/components/dashboard/FilterPanel";
 import { KPICards } from "@/components/dashboard/KPICards";
 import { MaintenanceChart } from "@/components/dashboard/MaintenanceChart";
 import { EquipmentTable } from "@/components/dashboard/EquipmentTable";
 import { CSVImportButton } from "@/components/dashboard/CSVImportButton";
+import { CriticalAlertsPanel } from "@/components/dashboard/CriticalAlertsPanel";
 
 /**
  * Dashboard principal de manutenção
@@ -50,7 +51,15 @@ export default function MaintenanceDashboard() {
         .filter((data): data is MonthData => data !== undefined);
 
       if (monthData.length === 0) {
-        return { month, MTBF: 0, MTTR: 0, Disponibilidade: 0, Custo: 0 };
+        return {
+          month,
+          MTBF: 0,
+          MTTR: 0,
+          Disponibilidade: 0,
+          Performance: 0,
+          Qualidade: 0,
+          Custo: 0
+        };
       }
 
       const avg = (key: keyof MonthData) =>
@@ -64,6 +73,8 @@ export default function MaintenanceDashboard() {
         MTBF: Math.round(avg("MTBF")),
         MTTR: Number(avg("MTTR").toFixed(2)),
         Disponibilidade: Number(avg("Disponibilidade").toFixed(1)),
+        Performance: Number(avg("Performance").toFixed(1)),
+        Qualidade: Number(avg("Qualidade").toFixed(1)),
         Custo: Number(sum("Custo").toFixed(2)),
       };
     });
@@ -72,15 +83,65 @@ export default function MaintenanceDashboard() {
   const kpiCards = useMemo((): KPICard[] => {
     if (consolidatedHistory.length === 0) {
       return [
-        { label: "MTBF", value: "0h", trend: "up", change: "0%", status: "warning" },
-        { label: "MTTR", value: "0h", trend: "up", change: "0%", status: "warning" },
-        { label: "Disponibilidade", value: "0%", trend: "up", change: "0%", status: "warning" },
-        { label: "Custo", value: "R$ 0M", trend: "up", change: "0%", status: "warning" },
+        {
+          label: "MTBF",
+          value: "0h",
+          numericValue: 0,
+          trend: "up",
+          change: "0%",
+          status: "warning",
+          target: KPI_TARGETS.MTBF,
+          unit: "h"
+        },
+        {
+          label: "MTTR",
+          value: "0h",
+          numericValue: 0,
+          trend: "up",
+          change: "0%",
+          status: "warning",
+          target: KPI_TARGETS.MTTR,
+          unit: "h"
+        },
+        {
+          label: "Disponibilidade",
+          value: "0%",
+          numericValue: 0,
+          trend: "up",
+          change: "0%",
+          status: "warning",
+          target: KPI_TARGETS.Disponibilidade,
+          unit: "%"
+        },
+        {
+          label: "OEE",
+          value: "0%",
+          numericValue: 0,
+          trend: "up",
+          change: "0%",
+          status: "warning",
+          target: KPI_TARGETS.OEE,
+          unit: "%"
+        },
+        {
+          label: "Custo",
+          value: "R$ 0M",
+          numericValue: 0,
+          trend: "up",
+          change: "0%",
+          status: "warning",
+          target: KPI_TARGETS.Custo,
+          unit: "M"
+        },
       ];
     }
 
     const last = consolidatedHistory[consolidatedHistory.length - 1];
     const prev = consolidatedHistory[consolidatedHistory.length - 2] ?? last;
+
+    // Calcular OEE = Disponibilidade × Performance × Qualidade
+    const lastOEE = (last.Disponibilidade * last.Performance * last.Qualidade) / 10000;
+    const prevOEE = (prev.Disponibilidade * prev.Performance * prev.Qualidade) / 10000;
 
     const calculateChange = (current: number, previous: number, invertTrend = false) => {
       if (previous === 0) return { change: "0%", trend: "up" as const };
@@ -94,39 +155,83 @@ export default function MaintenanceDashboard() {
       return { change, trend } as const;
     };
 
+    // Função para calcular status baseado na meta
+    const calculateStatus = (
+      value: number,
+      target: { value: number; min: number; worldClass: number },
+      isLowerBetter = false
+    ): KPICard["status"] => {
+      if (isLowerBetter) {
+        // Para MTTR e Custo, menor é melhor
+        if (value <= target.worldClass) return "excellent";
+        if (value <= target.value) return "good";
+        if (value <= target.min) return "warning";
+        return "critical";
+      } else {
+        // Para MTBF, Disponibilidade, OEE, maior é melhor
+        if (value >= target.worldClass) return "excellent";
+        if (value >= target.value) return "good";
+        if (value >= target.min) return "warning";
+        return "critical";
+      }
+    };
+
     const mtbf = calculateChange(last.MTBF, prev.MTBF);
     const mttr = calculateChange(last.MTTR, prev.MTTR, true);
     const availability = calculateChange(last.Disponibilidade, prev.Disponibilidade);
+    const oee = calculateChange(lastOEE, prevOEE);
     const cost = calculateChange(last.Custo, prev.Custo, true);
 
     return [
       {
         label: "MTBF (Mean Time Between Failures)",
         value: `${last.MTBF}h`,
+        numericValue: last.MTBF,
         trend: mtbf.trend,
         change: mtbf.change,
-        status: mtbf.trend === "up" ? "good" : "warning"
+        status: calculateStatus(last.MTBF, KPI_TARGETS.MTBF),
+        target: KPI_TARGETS.MTBF,
+        unit: "h"
       },
       {
         label: "MTTR (Mean Time To Repair)",
         value: `${last.MTTR}h`,
+        numericValue: last.MTTR,
         trend: mttr.trend,
         change: mttr.change,
-        status: mttr.trend === "up" ? "good" : "warning"
+        status: calculateStatus(last.MTTR, KPI_TARGETS.MTTR, true),
+        target: KPI_TARGETS.MTTR,
+        unit: "h"
       },
       {
         label: "Disponibilidade",
         value: `${last.Disponibilidade}%`,
+        numericValue: last.Disponibilidade,
         trend: availability.trend,
         change: availability.change,
-        status: availability.trend === "up" ? "good" : "warning"
+        status: calculateStatus(last.Disponibilidade, KPI_TARGETS.Disponibilidade),
+        target: KPI_TARGETS.Disponibilidade,
+        unit: "%"
+      },
+      {
+        label: "OEE (Overall Equipment Effectiveness)",
+        value: `${lastOEE.toFixed(1)}%`,
+        numericValue: lastOEE,
+        trend: oee.trend,
+        change: oee.change,
+        status: calculateStatus(lastOEE, KPI_TARGETS.OEE),
+        target: KPI_TARGETS.OEE,
+        unit: "%"
       },
       {
         label: "Custo de Manutenção",
         value: `R$ ${last.Custo.toFixed(2)}M`,
+        numericValue: last.Custo,
         trend: cost.trend,
         change: cost.change,
-        status: cost.trend === "up" ? "good" : "warning"
+        status: calculateStatus(last.Custo, KPI_TARGETS.Custo, true),
+        target: KPI_TARGETS.Custo,
+        unit: "M"
       },
     ];
   }, [consolidatedHistory]);
@@ -155,6 +260,99 @@ export default function MaintenanceDashboard() {
         trend
       };
     }).sort((a, b) => b.availability - a.availability);
+  }, [filteredEquipments, period]);
+
+  // Gerar alertas críticos baseados nos KPIs e metas
+  const criticalAlerts = useMemo((): CriticalAlert[] => {
+    const alerts: CriticalAlert[] = [];
+    const lastMonth = period.months[period.months.length - 1];
+
+    filteredEquipments.forEach(equipment => {
+      const lastRecord = equipment.history.find(h => h.month === lastMonth);
+      if (!lastRecord) return;
+
+      // Alerta de Disponibilidade
+      if (lastRecord.Disponibilidade < KPI_TARGETS.Disponibilidade.min) {
+        alerts.push({
+          equipmentId: equipment.id,
+          equipmentName: equipment.name,
+          message: `Disponibilidade crítica: ${lastRecord.Disponibilidade.toFixed(1)}% está abaixo do mínimo aceitável de ${KPI_TARGETS.Disponibilidade.min}%`,
+          severity: "critical",
+          kpi: "Disponibilidade",
+          currentValue: lastRecord.Disponibilidade,
+          targetValue: KPI_TARGETS.Disponibilidade.value
+        });
+      } else if (lastRecord.Disponibilidade < KPI_TARGETS.Disponibilidade.value) {
+        alerts.push({
+          equipmentId: equipment.id,
+          equipmentName: equipment.name,
+          message: `Disponibilidade abaixo da meta: ${lastRecord.Disponibilidade.toFixed(1)}% (meta: ${KPI_TARGETS.Disponibilidade.value}%)`,
+          severity: "warning",
+          kpi: "Disponibilidade",
+          currentValue: lastRecord.Disponibilidade,
+          targetValue: KPI_TARGETS.Disponibilidade.value
+        });
+      }
+
+      // Alerta de MTBF
+      if (lastRecord.MTBF < KPI_TARGETS.MTBF.min) {
+        alerts.push({
+          equipmentId: equipment.id,
+          equipmentName: equipment.name,
+          message: `MTBF crítico: ${lastRecord.MTBF}h está abaixo do mínimo de ${KPI_TARGETS.MTBF.min}h`,
+          severity: "critical",
+          kpi: "MTBF",
+          currentValue: lastRecord.MTBF,
+          targetValue: KPI_TARGETS.MTBF.value
+        });
+      }
+
+      // Alerta de MTTR
+      if (lastRecord.MTTR > KPI_TARGETS.MTTR.min) {
+        alerts.push({
+          equipmentId: equipment.id,
+          equipmentName: equipment.name,
+          message: `MTTR crítico: ${lastRecord.MTTR}h está acima do máximo aceitável de ${KPI_TARGETS.MTTR.min}h`,
+          severity: "critical",
+          kpi: "MTTR",
+          currentValue: lastRecord.MTTR,
+          targetValue: KPI_TARGETS.MTTR.value
+        });
+      }
+
+      // Alerta de OEE
+      const oee = (lastRecord.Disponibilidade * lastRecord.Performance * lastRecord.Qualidade) / 10000;
+      if (oee < KPI_TARGETS.OEE.min) {
+        alerts.push({
+          equipmentId: equipment.id,
+          equipmentName: equipment.name,
+          message: `OEE crítico: ${oee.toFixed(1)}% está abaixo do mínimo de ${KPI_TARGETS.OEE.min}%`,
+          severity: "critical",
+          kpi: "OEE",
+          currentValue: oee,
+          targetValue: KPI_TARGETS.OEE.value
+        });
+      }
+
+      // Alerta de equipamentos críticos parados
+      if (equipment.criticality === "A" && equipment.status === "Parado") {
+        alerts.push({
+          equipmentId: equipment.id,
+          equipmentName: equipment.name,
+          message: `Equipamento CRÍTICO parado - Impacto direto na produção`,
+          severity: "critical",
+          kpi: "Status",
+          currentValue: 0,
+          targetValue: 100
+        });
+      }
+    });
+
+    // Ordenar por severidade (critical primeiro)
+    return alerts.sort((a, b) => {
+      const severityOrder = { critical: 0, warning: 1, info: 2 };
+      return severityOrder[a.severity] - severityOrder[b.severity];
+    });
   }, [filteredEquipments, period]);
 
   return (
@@ -188,6 +386,9 @@ export default function MaintenanceDashboard() {
           equipmentId={equipmentId}
           setEquipmentId={setEquipmentId}
         />
+
+        {/* Alertas Críticos */}
+        <CriticalAlertsPanel alerts={criticalAlerts} />
 
         {/* KPI Cards */}
         <KPICards kpiCards={kpiCards} />

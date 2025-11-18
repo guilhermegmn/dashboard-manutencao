@@ -8,6 +8,7 @@ describe('KPICards', () => {
     {
       label: 'MTBF (Mean Time Between Failures)',
       value: '360h',
+      numericValue: 360,
       trend: 'up',
       change: '+15.4%',
       status: 'good',
@@ -15,6 +16,7 @@ describe('KPICards', () => {
     {
       label: 'MTTR (Mean Time To Repair)',
       value: '2.8h',
+      numericValue: 2.8,
       trend: 'up',
       change: '+10.0%',
       status: 'good',
@@ -22,6 +24,7 @@ describe('KPICards', () => {
     {
       label: 'Disponibilidade',
       value: '95%',
+      numericValue: 95,
       trend: 'up',
       change: '+3.2%',
       status: 'good',
@@ -29,6 +32,7 @@ describe('KPICards', () => {
     {
       label: 'Custo de Manutenção',
       value: 'R$ 1.15M',
+      numericValue: 1.15,
       trend: 'down',
       change: '-5.0%',
       status: 'warning',
