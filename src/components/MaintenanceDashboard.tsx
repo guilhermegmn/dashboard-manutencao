@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { MonthData, KPICard, EquipmentWithAvailability, CriticalAlert } from "@/types/dashboard";
-import { EQUIPMENT_DATA, PERIODS, TREND_THRESHOLD, KPI_TARGETS } from "@/lib/equipmentData";
+import { EQUIPMENT_DATA, PERIODS, TREND_THRESHOLD, KPI_TARGETS, PM_CM_TARGET, MOCK_BACKLOG } from "@/lib/equipmentData";
 import { useCSVImport } from "@/hooks/useCSVImport";
 import { FilterPanel } from "@/components/dashboard/FilterPanel";
 import { KPICards } from "@/components/dashboard/KPICards";
@@ -10,6 +10,9 @@ import { MaintenanceChart } from "@/components/dashboard/MaintenanceChart";
 import { EquipmentTable } from "@/components/dashboard/EquipmentTable";
 import { CSVImportButton } from "@/components/dashboard/CSVImportButton";
 import { CriticalAlertsPanel } from "@/components/dashboard/CriticalAlertsPanel";
+import { PMvsCMChart } from "@/components/dashboard/PMvsCMChart";
+import { BacklogIndicator } from "@/components/dashboard/BacklogIndicator";
+import { KPIDetailModal } from "@/components/dashboard/KPIDetailModal";
 
 /**
  * Dashboard principal de manutenção
@@ -19,6 +22,7 @@ export default function MaintenanceDashboard() {
   const [periodId, setPeriodId] = useState("3m");
   const [category, setCategory] = useState("");
   const [equipmentId, setEquipmentId] = useState("");
+  const [selectedKPI, setSelectedKPI] = useState<KPICard | null>(null);
 
   const { csvEquipments, handleCSVUpload, generateCSVTemplate } = useCSVImport();
 
@@ -391,14 +395,27 @@ export default function MaintenanceDashboard() {
         <CriticalAlertsPanel alerts={criticalAlerts} />
 
         {/* KPI Cards */}
-        <KPICards kpiCards={kpiCards} />
+        <KPICards kpiCards={kpiCards} onKPIClick={setSelectedKPI} />
 
         {/* Gráfico consolidado */}
         <MaintenanceChart data={consolidatedHistory} />
 
+        {/* PM vs CM Chart */}
+        <PMvsCMChart data={consolidatedHistory} target={PM_CM_TARGET} />
+
+        {/* Backlog Indicator */}
+        <BacklogIndicator backlog={MOCK_BACKLOG} />
+
         {/* Tabela de equipamentos */}
         <EquipmentTable equipments={equipmentsByAvailability} />
       </div>
+
+      {/* Modal de Drill-Down */}
+      <KPIDetailModal
+        kpi={selectedKPI}
+        history={consolidatedHistory}
+        onClose={() => setSelectedKPI(null)}
+      />
     </div>
   );
 }

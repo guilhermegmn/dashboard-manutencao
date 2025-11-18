@@ -5,13 +5,14 @@ import { KPICard } from "@/types/dashboard";
 
 interface KPICardsProps {
   kpiCards: KPICard[];
+  onKPIClick?: (kpi: KPICard) => void;
 }
 
 /**
  * Grid de cards de KPIs com tendências, metas e progresso
  * Otimizado com React.memo para evitar re-renders desnecessários
  */
-export const KPICards = memo(function KPICards({ kpiCards }: KPICardsProps) {
+export const KPICards = memo(function KPICards({ kpiCards, onKPIClick }: KPICardsProps) {
   const renderTrendIcon = (trend: "up" | "down") => {
     return trend === "up" ? (
       <ArrowUp className="w-4 h-4 text-green-500" />
@@ -84,7 +85,10 @@ export const KPICards = memo(function KPICards({ kpiCards }: KPICardsProps) {
         return (
           <Card
             key={i}
-            className={`bg-white shadow-lg border-0 rounded-xl overflow-hidden ${getStatusColor(kpi.status)}`}
+            className={`bg-white shadow-lg border-0 rounded-xl overflow-hidden ${getStatusColor(kpi.status)} ${
+              onKPIClick ? 'cursor-pointer hover:shadow-xl transition-shadow' : ''
+            }`}
+            onClick={() => onKPIClick?.(kpi)}
           >
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">

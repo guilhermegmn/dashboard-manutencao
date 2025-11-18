@@ -10,6 +10,8 @@ export interface MonthData {
   Performance: number;  // % - Para cálculo do OEE
   Qualidade: number;    // % - Para cálculo do OEE
   Custo: number;
+  maintenancePreventive?: number;  // Quantidade de manutenções preventivas
+  maintenanceCorrective?: number;  // Quantidade de manutenções corretivas
 }
 
 export interface Equipment {
@@ -46,6 +48,26 @@ export interface CriticalAlert {
   kpi: string;
   currentValue: number;
   targetValue: number;
+}
+
+export interface MaintenanceOrder {
+  id: string;
+  equipmentId: string;
+  equipmentName: string;
+  type: "preventive" | "corrective";
+  priority: "high" | "medium" | "low";
+  status: "pending" | "in_progress" | "completed";
+  createdDate: string;
+  dueDate: string;
+  description: string;
+}
+
+export interface BacklogData {
+  totalOrders: number;
+  pendingOrders: number;
+  overdueOrders: number;
+  avgWaitTime: number;  // dias
+  orders: MaintenanceOrder[];
 }
 
 export interface Period {

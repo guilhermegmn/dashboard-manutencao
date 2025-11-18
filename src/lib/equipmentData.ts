@@ -1,4 +1,4 @@
-import { Equipment, Period, KPITarget } from "@/types/dashboard";
+import { Equipment, Period, KPITarget, MaintenanceOrder, BacklogData } from "@/types/dashboard";
 
 /**
  * Dados mockados de equipamentos para demonstração
@@ -11,10 +11,10 @@ export const EQUIPMENT_DATA: Equipment[] = [
     category: "Compressão",
     criticality: "A",  // Crítico - para produção
     history: [
-      { month: "Mai", MTBF: 280, MTTR: 3.4, Disponibilidade: 90, Performance: 88, Qualidade: 96, Custo: 0.5 },
-      { month: "Jun", MTBF: 310, MTTR: 3.1, Disponibilidade: 92, Performance: 90, Qualidade: 97, Custo: 0.45 },
-      { month: "Jul", MTBF: 360, MTTR: 2.8, Disponibilidade: 95, Performance: 92, Qualidade: 98, Custo: 0.4 },
-      { month: "Ago", MTBF: 390, MTTR: 2.6, Disponibilidade: 96, Performance: 93, Qualidade: 98, Custo: 0.35 },
+      { month: "Mai", MTBF: 280, MTTR: 3.4, Disponibilidade: 90, Performance: 88, Qualidade: 96, Custo: 0.5, maintenancePreventive: 12, maintenanceCorrective: 8 },
+      { month: "Jun", MTBF: 310, MTTR: 3.1, Disponibilidade: 92, Performance: 90, Qualidade: 97, Custo: 0.45, maintenancePreventive: 14, maintenanceCorrective: 6 },
+      { month: "Jul", MTBF: 360, MTTR: 2.8, Disponibilidade: 95, Performance: 92, Qualidade: 98, Custo: 0.4, maintenancePreventive: 16, maintenanceCorrective: 5 },
+      { month: "Ago", MTBF: 390, MTTR: 2.6, Disponibilidade: 96, Performance: 93, Qualidade: 98, Custo: 0.35, maintenancePreventive: 18, maintenanceCorrective: 4 },
     ],
     status: "Operacional",
   },
@@ -24,10 +24,10 @@ export const EQUIPMENT_DATA: Equipment[] = [
     category: "Movimentação",
     criticality: "B",  // Importante - impacto moderado
     history: [
-      { month: "Mai", MTBF: 330, MTTR: 2.7, Disponibilidade: 93, Performance: 91, Qualidade: 98, Custo: 0.38 },
-      { month: "Jun", MTBF: 360, MTTR: 2.6, Disponibilidade: 95, Performance: 93, Qualidade: 98, Custo: 0.36 },
-      { month: "Jul", MTBF: 410, MTTR: 2.4, Disponibilidade: 97, Performance: 94, Qualidade: 99, Custo: 0.34 },
-      { month: "Ago", MTBF: 440, MTTR: 2.2, Disponibilidade: 98, Performance: 95, Qualidade: 99, Custo: 0.33 },
+      { month: "Mai", MTBF: 330, MTTR: 2.7, Disponibilidade: 93, Performance: 91, Qualidade: 98, Custo: 0.38, maintenancePreventive: 10, maintenanceCorrective: 4 },
+      { month: "Jun", MTBF: 360, MTTR: 2.6, Disponibilidade: 95, Performance: 93, Qualidade: 98, Custo: 0.36, maintenancePreventive: 11, maintenanceCorrective: 3 },
+      { month: "Jul", MTBF: 410, MTTR: 2.4, Disponibilidade: 97, Performance: 94, Qualidade: 99, Custo: 0.34, maintenancePreventive: 12, maintenanceCorrective: 2 },
+      { month: "Ago", MTBF: 440, MTTR: 2.2, Disponibilidade: 98, Performance: 95, Qualidade: 99, Custo: 0.33, maintenancePreventive: 13, maintenanceCorrective: 2 },
     ],
     status: "Manutenção Programada",
   },
@@ -37,10 +37,10 @@ export const EQUIPMENT_DATA: Equipment[] = [
     category: "Motorização",
     criticality: "A",  // Crítico - motor principal
     history: [
-      { month: "Mai", MTBF: 270, MTTR: 3.2, Disponibilidade: 91, Performance: 85, Qualidade: 95, Custo: 0.62 },
-      { month: "Jun", MTBF: 295, MTTR: 3.0, Disponibilidade: 92, Performance: 87, Qualidade: 96, Custo: 0.58 },
-      { month: "Jul", MTBF: 330, MTTR: 2.9, Disponibilidade: 94, Performance: 89, Qualidade: 96, Custo: 0.56 },
-      { month: "Ago", MTBF: 365, MTTR: 2.7, Disponibilidade: 95, Performance: 90, Qualidade: 97, Custo: 0.52 },
+      { month: "Mai", MTBF: 270, MTTR: 3.2, Disponibilidade: 91, Performance: 85, Qualidade: 95, Custo: 0.62, maintenancePreventive: 8, maintenanceCorrective: 12 },
+      { month: "Jun", MTBF: 295, MTTR: 3.0, Disponibilidade: 92, Performance: 87, Qualidade: 96, Custo: 0.58, maintenancePreventive: 10, maintenanceCorrective: 10 },
+      { month: "Jul", MTBF: 330, MTTR: 2.9, Disponibilidade: 94, Performance: 89, Qualidade: 96, Custo: 0.56, maintenancePreventive: 12, maintenanceCorrective: 8 },
+      { month: "Ago", MTBF: 365, MTTR: 2.7, Disponibilidade: 95, Performance: 90, Qualidade: 97, Custo: 0.52, maintenancePreventive: 14, maintenanceCorrective: 6 },
     ],
     status: "Parado",
   },
@@ -98,3 +98,91 @@ export const MONTH_ORDER = [
  * Threshold para determinar se a tendência é estável
  */
 export const TREND_THRESHOLD = 0.5;
+
+/**
+ * Target de PM/CM (Preventiva vs Corretiva)
+ * Meta: >80% de manutenções preventivas (World Class)
+ */
+export const PM_CM_TARGET = {
+  value: 80,         // Meta: 80% preventiva
+  min: 65,           // Mínimo aceitável: 65%
+  worldClass: 90     // Classe mundial: 90%
+};
+
+/**
+ * Dados mockados de backlog de manutenção
+ */
+export const MOCK_BACKLOG: BacklogData = {
+  totalOrders: 24,
+  pendingOrders: 12,
+  overdueOrders: 3,
+  avgWaitTime: 4.5,
+  orders: [
+    {
+      id: "OM-001",
+      equipmentId: "comp-a1",
+      equipmentName: "Compressor A1",
+      type: "preventive",
+      priority: "high",
+      status: "pending",
+      createdDate: "2025-11-10",
+      dueDate: "2025-11-20",
+      description: "Troca de filtros e lubrificação geral"
+    },
+    {
+      id: "OM-002",
+      equipmentId: "motor-c3",
+      equipmentName: "Motor C3",
+      type: "corrective",
+      priority: "high",
+      status: "pending",
+      createdDate: "2025-11-05",
+      dueDate: "2025-11-15",
+      description: "Reparo de rolamento com vibração anormal"
+    },
+    {
+      id: "OM-003",
+      equipmentId: "este-b2",
+      equipmentName: "Esteira B2",
+      type: "preventive",
+      priority: "medium",
+      status: "in_progress",
+      createdDate: "2025-11-12",
+      dueDate: "2025-11-25",
+      description: "Inspeção de correia e alinhamento"
+    },
+    {
+      id: "OM-004",
+      equipmentId: "comp-a1",
+      equipmentName: "Compressor A1",
+      type: "corrective",
+      priority: "high",
+      status: "pending",
+      createdDate: "2025-11-01",
+      dueDate: "2025-11-10",
+      description: "Vazamento de óleo no compressor - ATRASADA"
+    },
+    {
+      id: "OM-005",
+      equipmentId: "motor-c3",
+      equipmentName: "Motor C3",
+      type: "preventive",
+      priority: "medium",
+      status: "pending",
+      createdDate: "2025-11-14",
+      dueDate: "2025-11-28",
+      description: "Manutenção preventiva programada"
+    },
+    {
+      id: "OM-006",
+      equipmentId: "este-b2",
+      equipmentName: "Esteira B2",
+      type: "corrective",
+      priority: "low",
+      status: "pending",
+      createdDate: "2025-11-15",
+      dueDate: "2025-11-30",
+      description: "Ajuste de velocidade da esteira"
+    }
+  ]
+};

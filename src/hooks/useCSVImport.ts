@@ -56,6 +56,8 @@ export function useCSVImport() {
                   Performance: Number(rowData.Performance) || 90,  // Padrão: 90%
                   Qualidade: Number(rowData.Qualidade || rowData.Quality) || 95,  // Padrão: 95%
                   Custo: Number(rowData.Custo) || 0,
+                  maintenancePreventive: rowData.maintenancePreventive ? Number(rowData.maintenancePreventive) : undefined,
+                  maintenanceCorrective: rowData.maintenanceCorrective ? Number(rowData.maintenanceCorrective) : undefined,
                 });
               }
             });
