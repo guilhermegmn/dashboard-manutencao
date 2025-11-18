@@ -1,0 +1,45 @@
+id,name,category,month,MTBF,MTTR,Disponibilidade,Custo,Status
+COMP-001,Compressor Parafuso Atlas Copco,Compressão,Out,320,2.8,94.2,0.52,Operacional
+COMP-001,Compressor Parafuso Atlas Copco,Compressão,Nov,340,2.5,95.8,0.48,Operacional
+COMP-001,Compressor Parafuso Atlas Copco,Compressão,Dez,360,2.3,96.5,0.45,Operacional
+COMP-001,Compressor Parafuso Atlas Copco,Compressão,Jan,385,2.1,97.2,0.42,Operacional
+COMP-002,Compressor Centrífugo Sulzer,Compressão,Out,280,3.5,92.1,0.68,Operacional
+COMP-002,Compressor Centrífugo Sulzer,Compressão,Nov,295,3.2,93.5,0.64,Operacional
+COMP-002,Compressor Centrífugo Sulzer,Compressão,Dez,310,3.0,94.8,0.61,Operacional
+COMP-002,Compressor Centrífugo Sulzer,Compressão,Jan,330,2.8,95.5,0.58,Operacional
+ESTE-001,Esteira Transportadora Linha 1,Movimentação,Out,450,1.5,98.2,0.28,Operacional
+ESTE-001,Esteira Transportadora Linha 1,Movimentação,Nov,470,1.3,98.7,0.25,Operacional
+ESTE-001,Esteira Transportadora Linha 1,Movimentação,Dez,490,1.2,99.1,0.23,Operacional
+ESTE-001,Esteira Transportadora Linha 1,Movimentação,Jan,510,1.0,99.3,0.21,Operacional
+ESTE-002,Esteira Transportadora Linha 2,Movimentação,Out,380,2.1,96.8,0.35,Manutenção Programada
+ESTE-002,Esteira Transportadora Linha 2,Movimentação,Nov,400,1.9,97.5,0.32,Manutenção Programada
+ESTE-002,Esteira Transportadora Linha 2,Movimentação,Dez,420,1.7,98.1,0.30,Operacional
+ESTE-002,Esteira Transportadora Linha 2,Movimentação,Jan,440,1.5,98.5,0.28,Operacional
+BOMBA-001,Bomba Centrífuga KSB 100-250,Bombeamento,Out,310,2.9,93.8,0.45,Operacional
+BOMBA-001,Bomba Centrífuga KSB 100-250,Bombeamento,Nov,330,2.6,95.1,0.42,Operacional
+BOMBA-001,Bomba Centrífuga KSB 100-250,Bombeamento,Dez,350,2.4,96.2,0.39,Operacional
+BOMBA-001,Bomba Centrífuga KSB 100-250,Bombeamento,Jan,370,2.2,96.9,0.37,Operacional
+BOMBA-002,Bomba Dosadora Grundfos,Bombeamento,Out,290,3.2,92.5,0.51,Operacional
+BOMBA-002,Bomba Dosadora Grundfos,Bombeamento,Nov,305,3.0,93.8,0.48,Parado
+BOMBA-002,Bomba Dosadora Grundfos,Bombeamento,Dez,145,6.5,78.2,1.25,Parado
+BOMBA-002,Bomba Dosadora Grundfos,Bombeamento,Jan,320,2.8,94.5,0.46,Operacional
+MOTOR-001,Motor Elétrico WEG 500HP,Motorização,Out,420,1.8,97.8,0.32,Operacional
+MOTOR-001,Motor Elétrico WEG 500HP,Motorização,Nov,440,1.6,98.3,0.29,Operacional
+MOTOR-001,Motor Elétrico WEG 500HP,Motorização,Dez,460,1.4,98.7,0.27,Operacional
+MOTOR-001,Motor Elétrico WEG 500HP,Motorização,Jan,480,1.2,99.0,0.25,Operacional
+MOTOR-002,Motor Elétrico Siemens 750HP,Motorização,Out,390,2.2,96.9,0.38,Operacional
+MOTOR-002,Motor Elétrico Siemens 750HP,Motorização,Nov,410,2.0,97.5,0.35,Operacional
+MOTOR-002,Motor Elétrico Siemens 750HP,Motorização,Dez,430,1.8,98.0,0.33,Operacional
+MOTOR-002,Motor Elétrico Siemens 750HP,Motorização,Jan,450,1.6,98.4,0.31,Operacional
+RESFR-001,Torre de Resfriamento Evapco,Resfriamento,Out,360,2.5,95.5,0.42,Operacional
+RESFR-001,Torre de Resfriamento Evapco,Resfriamento,Nov,375,2.3,96.2,0.39,Operacional
+RESFR-001,Torre de Resfriamento Evapco,Resfriamento,Dez,390,2.1,96.8,0.37,Manutenção Programada
+RESFR-001,Torre de Resfriamento Evapco,Resfriamento,Jan,405,1.9,97.3,0.35,Operacional
+VALID-001,Válvula de Controle Fisher,Válvulas,Out,510,0.9,99.2,0.18,Operacional
+VALID-001,Válvula de Controle Fisher,Válvulas,Nov,530,0.8,99.4,0.16,Operacional
+VALID-001,Válvula de Controle Fisher,Válvulas,Dez,550,0.7,99.5,0.15,Operacional
+VALID-001,Válvula de Controle Fisher,Válvulas,Jan,570,0.6,99.6,0.14,Operacional
+TROCADOR-001,Trocador de Calor Alfa Laval,Troca Térmica,Out,340,2.7,94.8,0.48,Operacional
+TROCADOR-001,Trocador de Calor Alfa Laval,Troca Térmica,Nov,355,2.5,95.6,0.45,Operacional
+TROCADOR-001,Trocador de Calor Alfa Laval,Troca Térmica,Dez,370,2.3,96.3,0.42,Operacional
+TROCADOR-001,Trocador de Calor Alfa Laval,Troca Térmica,Jan,385,2.1,96.9,0.40,Operacional
