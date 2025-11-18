@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { MonthData } from "@/types/dashboard";
@@ -8,8 +9,9 @@ interface MaintenanceChartProps {
 
 /**
  * Gráfico de linha mostrando tendência consolidada dos KPIs
+ * Otimizado com React.memo para evitar re-renders desnecessários
  */
-export function MaintenanceChart({ data }: MaintenanceChartProps) {
+export const MaintenanceChart = memo(function MaintenanceChart({ data }: MaintenanceChartProps) {
   return (
     <Card className="bg-white shadow-lg border-0 rounded-xl">
       <CardContent className="p-6">
@@ -83,4 +85,4 @@ export function MaintenanceChart({ data }: MaintenanceChartProps) {
       </CardContent>
     </Card>
   );
-}
+});

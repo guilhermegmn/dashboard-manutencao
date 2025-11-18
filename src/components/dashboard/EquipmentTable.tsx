@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { EquipmentWithAvailability, TrendType } from "@/types/dashboard";
@@ -8,8 +9,9 @@ interface EquipmentTableProps {
 
 /**
  * Tabela com ranking de disponibilidade por equipamento
+ * Otimizada com React.memo para evitar re-renders desnecessários
  */
-export function EquipmentTable({ equipments }: EquipmentTableProps) {
+export const EquipmentTable = memo(function EquipmentTable({ equipments }: EquipmentTableProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Operacional":
@@ -105,4 +107,4 @@ export function EquipmentTable({ equipments }: EquipmentTableProps) {
       </CardContent>
     </Card>
   );
-}
+});

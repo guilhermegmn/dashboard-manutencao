@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Button } from "@/components/ui/button";
 
 interface CSVImportButtonProps {
@@ -7,8 +8,9 @@ interface CSVImportButtonProps {
 
 /**
  * Botões para importar CSV e baixar template
+ * Otimizado com React.memo para evitar re-renders desnecessários
  */
-export function CSVImportButton({
+export const CSVImportButton = memo(function CSVImportButton({
   onCSVUpload,
   onDownloadTemplate,
 }: CSVImportButtonProps) {
@@ -28,4 +30,4 @@ export function CSVImportButton({
       </Button>
     </div>
   );
-}
+});

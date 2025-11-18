@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Equipment } from "@/types/dashboard";
 import { MONTH_ORDER } from "@/lib/equipmentData";
 
 /**
  * Hook customizado para gerenciar importação de arquivos CSV
+ * Otimizado com useCallback para callbacks estáveis
  */
 export function useCSVImport() {
   const [csvEquipments, setCsvEquipments] = useState<Equipment[] | null>(null);
@@ -66,7 +67,7 @@ export function useCSVImport() {
     });
   };
 
-  const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCSVUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -77,9 +78,9 @@ export function useCSVImport() {
       console.error(err);
       alert(`Falha ao processar CSV: ${err instanceof Error ? err.message : 'Erro desconhecido'}`);
     }
-  };
+  }, []);
 
-  const generateCSVTemplate = () => {
+  const generateCSVTemplate = useCallback(() => {
     const template = `id,name,category,month,MTBF,MTTR,Disponibilidade,Custo,Status
 comp-a1,Compressor A1,Compressão,Mai,280,3.4,90,0.5,Operacional
 comp-a1,Compressor A1,Compressão,Jun,310,3.1,92,0.45,Operacional
@@ -103,7 +104,7 @@ motor-c3,Motor C3,Motorização,Ago,365,2.7,95,0.52,Parado`;
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  };
+  }, []);
 
   return {
     csvEquipments,

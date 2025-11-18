@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Equipment, Period } from "@/types/dashboard";
 
 interface FilterPanelProps {
@@ -14,8 +15,9 @@ interface FilterPanelProps {
 
 /**
  * Painel de filtros para período, categoria e equipamento
+ * Otimizado com React.memo para evitar re-renders desnecessários
  */
-export function FilterPanel({
+export const FilterPanel = memo(function FilterPanel({
   periods,
   periodId,
   setPeriodId,
@@ -89,4 +91,4 @@ export function FilterPanel({
       </div>
     </div>
   );
-}
+});

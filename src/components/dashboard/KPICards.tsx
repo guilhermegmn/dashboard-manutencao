@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUp, ArrowDown, CheckCircle, AlertTriangle } from "lucide-react";
 import { KPICard } from "@/types/dashboard";
@@ -8,8 +9,9 @@ interface KPICardsProps {
 
 /**
  * Grid de cards de KPIs com tendências
+ * Otimizado com React.memo para evitar re-renders desnecessários
  */
-export function KPICards({ kpiCards }: KPICardsProps) {
+export const KPICards = memo(function KPICards({ kpiCards }: KPICardsProps) {
   const renderTrendIcon = (trend: "up" | "down") => {
     return trend === "up" ? (
       <ArrowUp className="w-4 h-4 text-green-500" />
@@ -57,4 +59,4 @@ export function KPICards({ kpiCards }: KPICardsProps) {
       ))}
     </div>
   );
-}
+});
