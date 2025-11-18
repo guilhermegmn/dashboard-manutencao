@@ -136,41 +136,6 @@ export const KPIDetailModal = memo(function KPIDetailModal({
             </div>
           </div>
 
-          {/* Metas e Benchmarks */}
-          {kpi.target && (
-            <div className="grid grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Award className="w-4 h-4 text-blue-600" />
-                  <span className="text-xs font-semibold text-blue-900">Classe Mundial</span>
-                </div>
-                <div className="text-2xl font-bold text-blue-900">
-                  {kpi.target.worldClass}{kpi.unit || ''}
-                </div>
-              </div>
-
-              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <Target className="w-4 h-4 text-green-600" />
-                  <span className="text-xs font-semibold text-green-900">Meta</span>
-                </div>
-                <div className="text-2xl font-bold text-green-900">
-                  {kpi.target.value}{kpi.unit || ''}
-                </div>
-              </div>
-
-              <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <AlertTriangle className="w-4 h-4 text-yellow-600" />
-                  <span className="text-xs font-semibold text-yellow-900">Mínimo Aceitável</span>
-                </div>
-                <div className="text-2xl font-bold text-yellow-900">
-                  {kpi.target.min}{kpi.unit || ''}
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Gráfico de Histórico */}
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <h3 className="font-semibold text-gray-900 mb-4">📈 Histórico de Performance</h3>
@@ -197,26 +162,12 @@ export const KPIDetailModal = memo(function KPIDetailModal({
 
                 {/* Linha de Meta */}
                 {kpi.target && (
-                  <>
-                    <ReferenceLine
-                      y={kpi.target.value}
-                      stroke="#10B981"
-                      strokeDasharray="5 5"
-                      label={{ value: "Meta", position: "right", fill: "#10B981", fontSize: 12 }}
-                    />
-                    <ReferenceLine
-                      y={kpi.target.worldClass}
-                      stroke="#3B82F6"
-                      strokeDasharray="3 3"
-                      label={{ value: "World Class", position: "right", fill: "#3B82F6", fontSize: 12 }}
-                    />
-                    <ReferenceLine
-                      y={kpi.target.min}
-                      stroke="#F59E0B"
-                      strokeDasharray="5 5"
-                      label={{ value: "Mínimo", position: "right", fill: "#F59E0B", fontSize: 12 }}
-                    />
-                  </>
+                  <ReferenceLine
+                    y={kpi.target.value}
+                    stroke="#10B981"
+                    strokeDasharray="5 5"
+                    label={{ value: "Meta", position: "right", fill: "#10B981", fontSize: 12 }}
+                  />
                 )}
 
                 <Line

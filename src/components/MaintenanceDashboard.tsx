@@ -162,21 +162,15 @@ export default function MaintenanceDashboard() {
     // Função para calcular status baseado na meta
     const calculateStatus = (
       value: number,
-      target: { value: number; min: number; worldClass: number },
+      target: { value: number },
       isLowerBetter = false
     ): KPICard["status"] => {
       if (isLowerBetter) {
         // Para MTTR e Custo, menor é melhor
-        if (value <= target.worldClass) return "excellent";
-        if (value <= target.value) return "good";
-        if (value <= target.min) return "warning";
-        return "critical";
+        return value <= target.value ? "good" : "warning";
       } else {
         // Para MTBF, Disponibilidade, OEE, maior é melhor
-        if (value >= target.worldClass) return "excellent";
-        if (value >= target.value) return "good";
-        if (value >= target.min) return "warning";
-        return "critical";
+        return value >= target.value ? "good" : "warning";
       }
     };
 

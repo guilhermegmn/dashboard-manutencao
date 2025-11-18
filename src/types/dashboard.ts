@@ -24,9 +24,7 @@ export interface Equipment {
 }
 
 export interface KPITarget {
-  value: number;
-  min: number;      // Mínimo aceitável
-  worldClass: number;  // Benchmark classe mundial
+  value: number;  // Meta principal
 }
 
 export interface KPICard {

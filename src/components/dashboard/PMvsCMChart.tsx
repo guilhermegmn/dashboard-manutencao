@@ -18,7 +18,7 @@ import { MonthData } from "@/types/dashboard";
 
 interface PMvsCMChartProps {
   data: MonthData[];
-  target?: { value: number; min: number; worldClass: number };
+  target?: { value: number };
 }
 
 /**
@@ -49,19 +49,14 @@ export const PMvsCMChart = memo(function PMvsCMChart({ data, target }: PMvsCMCha
   // Determinar status
   const getStatus = () => {
     if (!target) return "good";
-    if (currentPM >= target.worldClass) return "excellent";
-    if (currentPM >= target.value) return "good";
-    if (currentPM >= target.min) return "warning";
-    return "critical";
+    return currentPM >= target.value ? "good" : "warning";
   };
 
   const status = getStatus();
 
   const statusColors = {
-    excellent: "#3B82F6",  // azul
     good: "#10B981",       // verde
     warning: "#F59E0B",    // amarelo
-    critical: "#EF4444"    // vermelho
   };
 
   if (chartData.length === 0) {
@@ -101,15 +96,13 @@ export const PMvsCMChart = memo(function PMvsCMChart({ data, target }: PMvsCMCha
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: statusColors[status] }}></div>
             <span className="text-gray-600">
-              {status === "excellent" && "🏆 Classe Mundial"}
               {status === "good" && "✅ Atingindo Meta"}
               {status === "warning" && "⚠️ Abaixo da Meta"}
-              {status === "critical" && "🔴 Crítico"}
             </span>
           </div>
           <span className="text-gray-400">|</span>
           <span className="text-gray-600">
-            Target: &gt;{target?.value || 80}% Preventiva (World Class: {target?.worldClass || 90}%)
+            Meta: {target?.value || 80}% Preventiva
           </span>
         </div>
       </div>

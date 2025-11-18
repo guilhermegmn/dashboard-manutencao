@@ -47,33 +47,23 @@ export const EQUIPMENT_DATA: Equipment[] = [
 ];
 
 /**
- * Metas e benchmarks para KPIs - baseado em padrões ISO 55000 e TPM
+ * Metas para KPIs - Configure aqui os valores desejados
  */
 export const KPI_TARGETS = {
   MTBF: {
-    value: 400,        // Meta (horas)
-    min: 350,          // Mínimo aceitável
-    worldClass: 500    // Classe mundial
+    value: 400,  // Meta MTBF (horas)
   } as KPITarget,
   MTTR: {
-    value: 2,          // Meta (horas)
-    min: 3,            // Máximo aceitável
-    worldClass: 1      // Classe mundial
+    value: 2,    // Meta MTTR (horas)
   } as KPITarget,
   Disponibilidade: {
-    value: 95,         // Meta (%)
-    min: 90,           // Mínimo aceitável
-    worldClass: 98     // Classe mundial
+    value: 95,   // Meta Disponibilidade (%)
   } as KPITarget,
   OEE: {
-    value: 85,         // Meta (%) - TPM Standard
-    min: 60,           // Mínimo aceitável
-    worldClass: 90     // Classe mundial
+    value: 85,   // Meta OEE (%)
   } as KPITarget,
   Custo: {
-    value: 0.4,        // Meta (R$ Milhões)
-    min: 0.6,          // Máximo aceitável
-    worldClass: 0.3    // Classe mundial
+    value: 0.4,  // Meta Custo (R$ Milhões)
   } as KPITarget,
 };
 
@@ -101,12 +91,10 @@ export const TREND_THRESHOLD = 0.5;
 
 /**
  * Target de PM/CM (Preventiva vs Corretiva)
- * Meta: >80% de manutenções preventivas (World Class)
+ * Meta: % de manutenções preventivas
  */
 export const PM_CM_TARGET = {
-  value: 80,         // Meta: 80% preventiva
-  min: 65,           // Mínimo aceitável: 65%
-  worldClass: 90     // Classe mundial: 90%
+  value: 80,  // Meta: 80% preventiva
 };
 
 /**
